@@ -1,5 +1,5 @@
-import { Fragment, useEffect, useState } from "react";
-import { Layer, Rect, Stage } from "react-konva";
+import { useState } from "react";
+import { Layer, Rect, Stage, Text } from "react-konva";
 import { checkWin, getColor } from "../utils/grid";
 import defaultGrid from "./grid";
 import { Square } from "./types";
@@ -13,43 +13,42 @@ const Main = () => {
     turn: PLAYER,
     status: START
   })
-  const handleOnclick = (value: any) => {
+  const handleOnclick = (square: any) => {
     const {turn,grid} = gameState
+    const {value} = square
     if (value !== "") return;
     if (turn === PLAYER) {
-      value = "o";
+      square.value = "o";
       setGameState({...gameState,turn: CPU});
     }
     if (turn === CPU) {
-      value = "x";
+      square.value = "x";
       setGameState({...gameState,turn: PLAYER});
     }
     if(checkWin(grid)){
-      turn === PLAYER ? console.log(PLAYER + "win") : console.log(CPU + "win")
+      setGameState({...gameState,status: END})
     }
   };
-
-  const handleResetGame = () => {
-    setGameState({...gameState,grid: defaultGrid})
-  }
 
   return (
     <Stage width={500} height={500}>
       <Layer>
-        {gameState.grid.map(({x,y,value}:Square) => {
-          return (
-            <Rect
-              x={x * 32}
-              y={y * 32}
-              width={32}
-              height={32}
-              fill={getColor(value)}
-              stroke="black"
-              strokeWidth={1}
-              onClick={() => handleOnclick(value)}
-            />
-          );
-        })}
+      {gameState.status === END ? <Text text={`${gameState.turn} win`} x={20} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>:
+      gameState.grid.map((square:Square) => {
+        const {x,y,value} = square
+        return (
+          <Rect
+            x={x * 32}
+            y={y * 32}
+            width={32}
+            height={32}
+            fill={getColor(value)}
+            stroke="black"
+            strokeWidth={1}
+            onClick={() => handleOnclick(square)}
+          />
+        );
+      })}
       </Layer>
     </Stage>
   );

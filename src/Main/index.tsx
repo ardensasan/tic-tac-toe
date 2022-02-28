@@ -2,40 +2,51 @@ import { Fragment, useEffect, useState } from "react";
 import { Layer, Rect, Stage } from "react-konva";
 import { checkWin, getColor } from "../utils/grid";
 import defaultGrid from "./grid";
+import { Square } from "./types";
 const Main = () => {
-  const [grid, setGrid] = useState(defaultGrid);
-  const [turn, setTurn] = useState("p");
-  const handleOnclick = (square: any) => {
-    if (square.value !== "") return;
-    if (turn === "p") {
-      square.value = "o";
-      setTurn("cpu");
+  const PLAYER = "player";
+  const CPU = "cpu";
+  const START = "start"
+  const END = "end"
+  const [gameState,setGameState] = useState({
+    grid: defaultGrid,
+    turn: PLAYER,
+    status: START
+  })
+  const handleOnclick = (value: any) => {
+    const {turn,grid} = gameState
+    if (value !== "") return;
+    if (turn === PLAYER) {
+      value = "o";
+      setGameState({...gameState,turn: CPU});
     }
-    if (turn === "cpu") {
-      square.value = "x";
-      setTurn("p");
+    if (turn === CPU) {
+      value = "x";
+      setGameState({...gameState,turn: PLAYER});
     }
-    checkWin(grid)
-    console.log('%c 🍨     checkWin(grid): ', 'font-size:20px;background-color: #B03734;color:#fff;',     checkWin(grid));
+    if(checkWin(grid)){
+      turn === PLAYER ? console.log(PLAYER + "win") : console.log(CPU + "win")
+    }
   };
 
-  useEffect(()=>{
+  const handleResetGame = () => {
+    setGameState({...gameState,grid: defaultGrid})
+  }
 
-  })
   return (
     <Stage width={500} height={500}>
       <Layer>
-        {grid.map((square) => {
+        {gameState.grid.map(({x,y,value}:Square) => {
           return (
             <Rect
-              x={square.x * 32}
-              y={square.y * 32}
+              x={x * 32}
+              y={y * 32}
               width={32}
               height={32}
-              fill={getColor(square.value)}
+              fill={getColor(value)}
               stroke="black"
               strokeWidth={1}
-              onClick={() => handleOnclick(square)}
+              onClick={() => handleOnclick(value)}
             />
           );
         })}

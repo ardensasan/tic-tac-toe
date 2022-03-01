@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Layer, Rect, Stage, Text } from "react-konva";
-import { checkWin, getColor } from "../utils/grid";
+import { checkWin, getColor, resetGrid } from "../utils/grid";
 import defaultGrid from "./grid";
 import { Square } from "./types";
 const Main = () => {
@@ -30,27 +30,34 @@ const Main = () => {
     }
   };
 
+  const handleResetGame = () =>{
+    setGameState({status: START,turn: PLAYER, grid:resetGrid(defaultGrid)})
+  }
+
   return (
-    <Stage width={500} height={500}>
-      <Layer>
-      {gameState.status === END ? <Text text={`${gameState.turn} win`} x={20} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>:
-      gameState.grid.map((square:Square) => {
-        const {x,y,value} = square
-        return (
-          <Rect
-            x={x * 32}
-            y={y * 32}
-            width={32}
-            height={32}
-            fill={getColor(value)}
-            stroke="black"
-            strokeWidth={1}
-            onClick={() => handleOnclick(square)}
-          />
-        );
-      })}
-      </Layer>
-    </Stage>
+    <Fragment>
+      <button onClick={handleResetGame}>Reset</button>
+      <Stage width={500} height={500}>
+        <Layer>
+        {gameState.status === END ? <Text text={`${gameState.turn} win`} x={20} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>:
+        gameState.grid.map((square:Square) => {
+          const {x,y,value} = square
+          return (
+            <Rect
+              x={x * 32}
+              y={y * 32}
+              width={32}
+              height={32}
+              fill={getColor(value)}
+              stroke="black"
+              strokeWidth={1}
+              onClick={() => handleOnclick(square)}
+            />
+          );
+        })}
+        </Layer>
+      </Stage>
+    </Fragment>
   );
 };
 

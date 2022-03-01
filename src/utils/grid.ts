@@ -65,3 +65,9 @@ const checkPattern = (result: Array<any>) => {
     result[1].value === result[2].value
   )
 };
+
+export const resetGrid = (grid:Array<any>) =>{
+  return grid.map((square)=>{
+    return {...square,value: ""}
+  })
+}

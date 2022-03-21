@@ -17,17 +17,12 @@ const Main = () => {
     const {turn,grid} = gameState
     const {value} = square
     if (value !== "") return;
-    if (turn === PLAYER) {
-      square.value = "o";
-      setGameState({...gameState,turn: CPU});
+    if(gameState.status !== END) square.value = turn === CPU ? "x" :"o";
+    if(!checkWin(grid)){
+      setGameState({...gameState,turn: turn === PLAYER ? CPU : PLAYER});
+      return
     }
-    if (turn === CPU) {
-      square.value = "x";
-      setGameState({...gameState,turn: PLAYER});
-    }
-    if(checkWin(grid)){
-      setGameState({...gameState,status: END})
-    }
+    setGameState({...gameState,status: END})
   };
 
   const handleResetGame = () =>{
@@ -39,8 +34,7 @@ const Main = () => {
       <button onClick={handleResetGame}>Reset</button>
       <Stage width={500} height={500}>
         <Layer>
-        {gameState.status === END ? <Text text={`${gameState.turn} wins`} x={20} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>:
-        gameState.grid.map((square:Square) => {
+        {gameState.grid.map((square:Square) => {
           const {x,y,value} = square
           return (
             <Rect
@@ -55,6 +49,9 @@ const Main = () => {
             />
           );
         })}
+        </Layer>
+        <Layer y={100}>
+        {gameState.status === END ? <Text text={`${gameState.turn} wins`} x={5} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>: null}
         </Layer>
       </Stage>
     </Fragment>

@@ -4,8 +4,8 @@ import { checkWin, getColor, resetGrid } from "../utils/grid";
 import defaultGrid from "./grid";
 import { Square } from "./types";
 const Main = () => {
-  const PLAYER = "player";
-  const CPU = "cpu";
+  const PLAYER = "PLAYER";
+  const CPU = "CPU";
   const START = "start"
   const END = "end"
   const [gameState,setGameState] = useState({
@@ -39,7 +39,7 @@ const Main = () => {
       <button onClick={handleResetGame}>Reset</button>
       <Stage width={500} height={500}>
         <Layer>
-        {gameState.status === END ? <Text text={`${gameState.turn} win`} x={20} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>:
+        {gameState.status === END ? <Text text={`${gameState.turn} wins`} x={20} y={20} fontSize={20} fontFamily="Calibri" fill="green"/>:
         gameState.grid.map((square:Square) => {
           const {x,y,value} = square
           return (
